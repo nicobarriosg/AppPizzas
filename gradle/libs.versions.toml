@@ -1,5 +1,6 @@
 [versions]
 agp = "8.7.2"
+google-services = "4.3.15"  # Agrega esta línea para la versión de google-services
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
@@ -25,4 +26,4 @@ recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" } # Agrega esta línea

@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.services) // Nota el uso de "google.services" en lugar de "google-services"
 }
+
 
 android {
     namespace = "com.example.eva3"
@@ -32,7 +34,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
