@@ -4,30 +4,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/fondo">
 
     <EditText
         android:id="@+id/nombreEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nombre de la Pizza" />
+        android:hint="Nombre de la Pizza"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:backgroundTint="@color/white"/>
 
     <EditText
-        android:id="@+id/tipoEditText"
+        android:id="@+id/ingredientesEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Tipo de Pizza" />
+        android:hint="Ingredientes"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:backgroundTint="@color/white"/>
 
     <EditText
         android:id="@+id/precioEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Precio"
-        android:inputType="numberDecimal" />
+        android:inputType="numberDecimal"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:backgroundTint="@color/white"/>
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Guardar" />
+        android:text="Guardar"
+        android:backgroundTint="@color/rojo"
+        android:textColor="@color/white"/>
 </LinearLayout>

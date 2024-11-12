@@ -1,24 +1,21 @@
+// Pizza.java
 package com.example.eva3;
 
-// Clase Pizza
 public class Pizza {
     private String id;
-    private String nombrePizza;
-    private String tipoPizza;
+    private String nombre;
+    private String ingredientes;
     private double precio;
 
-    // Constructor vacío requerido por Firebase
-    public Pizza() {}
+    public Pizza() {
+    }
 
-    // Constructor con parámetros
-    public Pizza(String id, String nombrePizza, String tipoPizza, double precio) {
-        this.id = id;
-        this.nombrePizza = nombrePizza;
-        this.tipoPizza = tipoPizza;
+    public Pizza(String nombre, String ingredientes, double precio) {
+        this.nombre = nombre;
+        this.ingredientes = ingredientes;
         this.precio = precio;
     }
 
-    // Getters y Setters
     public String getId() {
         return id;
     }
@@ -27,20 +24,20 @@ public class Pizza {
         this.id = id;
     }
 
-    public String getNombrePizza() {
-        return nombrePizza;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNombrePizza(String nombrePizza) {
-        this.nombrePizza = nombrePizza;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public String getTipoPizza() {
-        return tipoPizza;
+    public String getIngredientes() {
+        return ingredientes;
     }
 
-    public void setTipoPizza(String tipoPizza) {
-        this.tipoPizza = tipoPizza;
+    public void setIngredientes(String ingredientes) {
+        this.ingredientes = ingredientes;
     }
 
     public double getPrecio() {
@@ -49,16 +46,5 @@ public class Pizza {
 
     public void setPrecio(double precio) {
         this.precio = precio;
-    }
-
-    // Método toString opcional para visualizar en listas
-    @Override
-    public String toString() {
-        return "Pizza{" +
-                "id='" + id + '\'' +
-                ", nombrePizza='" + nombrePizza + '\'' +
-                ", tipoPizza='" + tipoPizza + '\'' +
-                ", precio=" + precio +
-                '}';
     }
 }

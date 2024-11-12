@@ -1,24 +1,22 @@
+// AddEditPizzaActivity.java
 package com.example.eva3;
 
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.eva3.Pizza;
-import com.example.eva3.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class AddEditPizzaActivity extends AppCompatActivity {
-    private EditText nombreEditText, tipoEditText, precioEditText;
-    private DatabaseReference databaseReference;
+
+    private EditText nombreEditText, ingredientesEditText, precioEditText;
+    private Button saveButton;
+    private DatabaseReference pizzaRef;
     private String pizzaId;
 
     @Override
@@ -26,74 +24,65 @@ public class AddEditPizzaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_pizza);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("pizzas");
-
         nombreEditText = findViewById(R.id.nombreEditText);
-        tipoEditText = findViewById(R.id.tipoEditText);
+        ingredientesEditText = findViewById(R.id.ingredientesEditText);
         precioEditText = findViewById(R.id.precioEditText);
-        Button saveButton = findViewById(R.id.saveButton);
+        saveButton = findViewById(R.id.saveButton);
 
+        pizzaRef = FirebaseDatabase.getInstance().getReference("pizzas");
         pizzaId = getIntent().getStringExtra("pizzaId");
+
         if (pizzaId != null) {
-            loadPizzaData();
+            loadPizzaData(pizzaId);
         }
 
-        saveButton.setOnClickListener(v -> {
-            String nombre = nombreEditText.getText().toString().trim();
-            String tipo = tipoEditText.getText().toString().trim();
-            double precio = Double.parseDouble(precioEditText.getText().toString().trim());
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                savePizza();
+            }
+        });
+    }
+
+    private void loadPizzaData(@NonNull String id) {
+        pizzaRef.child(id).get().addOnSuccessListener(snapshot -> {
+            Pizza pizza = snapshot.getValue(Pizza.class);
+            if (pizza != null) {
+                nombreEditText.setText(pizza.getNombre());
+                ingredientesEditText.setText(pizza.getIngredientes());
+                // Convertir el precio a cadena con el símbolo "$" solo para mostrarlo en la interfaz
+                precioEditText.setText("$" + String.valueOf((int) pizza.getPrecio()));
+            }
+        }).addOnFailureListener(e -> Toast.makeText(this, "Error al cargar los datos", Toast.LENGTH_SHORT).show());
+    }
+
+    private void savePizza() {
+        String nombre = nombreEditText.getText().toString().trim();
+        String ingredientes = ingredientesEditText.getText().toString().trim();
+        String precioStr = precioEditText.getText().toString().replace("$", "").trim();  // Remover "$" antes de guardar
+
+        if (TextUtils.isEmpty(nombre) || TextUtils.isEmpty(ingredientes) || TextUtils.isEmpty(precioStr)) {
+            Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            // Convertir el precio a entero para guardarlo sin símbolo "$"
+            int precio = Integer.parseInt(precioStr);
+            Pizza pizza = new Pizza(nombre, ingredientes, precio);
 
             if (pizzaId == null) {
-                addPizza(nombre, tipo, precio);
+                pizzaRef.push().setValue(pizza)
+                        .addOnSuccessListener(aVoid -> Toast.makeText(this, "Pizza agregada", Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e -> Toast.makeText(this, "Error al agregar pizza", Toast.LENGTH_SHORT).show());
             } else {
-                editPizza(nombre, tipo, precio);
+                pizzaRef.child(pizzaId).setValue(pizza)
+                        .addOnSuccessListener(aVoid -> Toast.makeText(this, "Pizza actualizada", Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e -> Toast.makeText(this, "Error al actualizar pizza", Toast.LENGTH_SHORT).show());
             }
-        });
-    }
-
-    private void addPizza(String nombre, String tipo, double precio) {
-        String id = databaseReference.push().getKey();
-        Pizza pizza = new Pizza(id, nombre, tipo, precio);
-        databaseReference.child(id).setValue(pizza)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(this, "Pizza agregada", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(this, "Error al agregar pizza", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void editPizza(String nombre, String tipo, double precio) {
-        Pizza pizza = new Pizza(pizzaId, nombre, tipo, precio);
-        databaseReference.child(pizzaId).setValue(pizza)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(this, "Pizza actualizada", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(this, "Error al actualizar pizza", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void loadPizzaData() {
-        databaseReference.child(pizzaId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Pizza pizza = dataSnapshot.getValue(Pizza.class);
-                if (pizza != null) {
-                    nombreEditText.setText(pizza.getNombrePizza());
-                    tipoEditText.setText(pizza.getTipoPizza());
-                    precioEditText.setText(String.valueOf(pizza.getPrecio()));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(AddEditPizzaActivity.this, "Error al cargar datos", Toast.LENGTH_SHORT).show();
-            }
-        });
+            finish();
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "El precio debe ser un número válido", Toast.LENGTH_SHORT).show();
+        }
     }
 }

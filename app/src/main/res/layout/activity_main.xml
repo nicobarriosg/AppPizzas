@@ -1,19 +1,25 @@
+<!-- activity_main.xml -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/fondo">
 
+    <!-- Botón para agregar pizza -->
+    <Button
+        android:id="@+id/addPizzaButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Agregar Pizza"
+        android:backgroundTint="@color/rojo"
+        android:textColor="@color/white" />
+
+    <!-- RecyclerView para mostrar la lista de productos -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
-
-    <Button
-        android:id="@+id/addPizzaButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Agregar Pizza" />
 </LinearLayout>

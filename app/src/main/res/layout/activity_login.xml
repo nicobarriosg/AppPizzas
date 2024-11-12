@@ -1,33 +1,77 @@
+<!-- activity_login.xml -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/fondo">
 
+
+    <!-- Imagen en la parte superior -->
+    <ImageView
+        android:id="@+id/loginImage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/logo"
+        android:contentDescription="Login Image" />
+
+    <!-- Texto debajo de la imagen -->
+    <TextView
+        android:id="@+id/loginText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="center"
+        android:text="Inicia sesión"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"/>
+
+    <!-- Campo de correo electrónico -->
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Correo electrónico"
-        android:inputType="textEmailAddress" />
+        android:inputType="textEmailAddress"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:backgroundTint="@color/white" />
 
+    <!-- Campo de contraseña -->
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Contraseña"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:backgroundTint="@color/white" />
 
+
+    <!-- Botón de Iniciar Sesión -->
     <Button
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Iniciar Sesión" />
+        android:text="Iniciar Sesión"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/rojo"
+        android:textColor="@color/white" />
 
+    <!-- Botón de Registrarse -->
     <Button
         android:id="@+id/registerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Registrarse" />
+        android:text="Registrarse"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/rojo"
+        android:textColor="@color/white" />
+
+
 </LinearLayout>
