@@ -5,15 +5,24 @@ public class Pizza {
     private String id;
     private String nombre;
     private String ingredientes;
-    private double precio;
+    private int precio;
+    private int imageResId;  // ID del recurso de la imagen local
 
-    public Pizza() {
-    }
+    public Pizza() {}
 
-    public Pizza(String nombre, String ingredientes, double precio) {
+    public Pizza(String nombre, String ingredientes, int precio, int imageResId) {
         this.nombre = nombre;
         this.ingredientes = ingredientes;
         this.precio = precio;
+        this.imageResId = imageResId;
+    }
+
+    public int getImageResId() {
+        return imageResId;
+    }
+
+    public void setImageResId(int imageResId) {
+        this.imageResId = imageResId;
     }
 
     public String getId() {
@@ -45,6 +54,6 @@ public class Pizza {
     }
 
     public void setPrecio(double precio) {
-        this.precio = precio;
+        this.precio = (int) precio;
     }
 }

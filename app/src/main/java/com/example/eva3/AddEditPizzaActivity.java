@@ -56,10 +56,12 @@ public class AddEditPizzaActivity extends AppCompatActivity {
         }).addOnFailureListener(e -> Toast.makeText(this, "Error al cargar los datos", Toast.LENGTH_SHORT).show());
     }
 
+    // AddEditPizzaActivity.java
+
     private void savePizza() {
         String nombre = nombreEditText.getText().toString().trim();
         String ingredientes = ingredientesEditText.getText().toString().trim();
-        String precioStr = precioEditText.getText().toString().replace("$", "").trim();  // Remover "$" antes de guardar
+        String precioStr = precioEditText.getText().toString().replace("$", "").trim();
 
         if (TextUtils.isEmpty(nombre) || TextUtils.isEmpty(ingredientes) || TextUtils.isEmpty(precioStr)) {
             Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
@@ -67,9 +69,9 @@ public class AddEditPizzaActivity extends AppCompatActivity {
         }
 
         try {
-            // Convertir el precio a entero para guardarlo sin símbolo "$"
             int precio = Integer.parseInt(precioStr);
-            Pizza pizza = new Pizza(nombre, ingredientes, precio);
+            int imageResId = R.drawable.pizza_default; // ID de la imagen predeterminada
+            Pizza pizza = new Pizza(nombre, ingredientes, precio, imageResId); // Constructor con cuatro parámetros
 
             if (pizzaId == null) {
                 pizzaRef.push().setValue(pizza)

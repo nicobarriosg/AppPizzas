@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -37,8 +38,10 @@ public class PizzaAdapter extends RecyclerView.Adapter<PizzaAdapter.PizzaViewHol
         Pizza pizza = pizzaList.get(position);
         holder.nombreTextView.setText(pizza.getNombre());
         holder.ingredientesTextView.setText(pizza.getIngredientes());
-        // Mostrar el precio formateado con el símbolo "$" sin decimales en la lista
-        holder.precioTextView.setText("$" + String.valueOf((int) pizza.getPrecio()));
+        holder.precioTextView.setText("$" + pizza.getPrecio());
+
+        // Cargar la imagen desde el recurso local usando el ID de la imagen
+        holder.pizzaImageView.setImageResource(pizza.getImageResId());
 
         // Acción del botón Editar
         holder.editButton.setOnClickListener(v -> {
@@ -52,10 +55,13 @@ public class PizzaAdapter extends RecyclerView.Adapter<PizzaAdapter.PizzaViewHol
             DatabaseReference pizzaRef = FirebaseDatabase.getInstance().getReference("pizzas").child(pizza.getId());
             pizzaRef.removeValue()
                     .addOnSuccessListener(aVoid -> {
-                        pizzaList.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, pizzaList.size());
-                        Toast.makeText(context, "Pizza eliminada", Toast.LENGTH_SHORT).show();
+                        // Verificar si la posición sigue siendo válida antes de eliminar
+                        if (position >= 0 && position < pizzaList.size()) {
+                            pizzaList.remove(position);
+                            notifyItemRemoved(position);
+                            notifyItemRangeChanged(position, pizzaList.size());
+                            Toast.makeText(context, "Pizza eliminada", Toast.LENGTH_SHORT).show();
+                        }
                     })
                     .addOnFailureListener(e -> Toast.makeText(context, "Error al eliminar pizza", Toast.LENGTH_SHORT).show());
         });
@@ -68,6 +74,7 @@ public class PizzaAdapter extends RecyclerView.Adapter<PizzaAdapter.PizzaViewHol
 
     public static class PizzaViewHolder extends RecyclerView.ViewHolder {
         TextView nombreTextView, ingredientesTextView, precioTextView;
+        ImageView pizzaImageView;
         Button editButton, deleteButton;
 
         public PizzaViewHolder(@NonNull View itemView) {
@@ -75,6 +82,7 @@ public class PizzaAdapter extends RecyclerView.Adapter<PizzaAdapter.PizzaViewHol
             nombreTextView = itemView.findViewById(R.id.nombreTextView);
             ingredientesTextView = itemView.findViewById(R.id.ingredientesTextView);
             precioTextView = itemView.findViewById(R.id.precioTextView);
+            pizzaImageView = itemView.findViewById(R.id.pizzaImageView);
             editButton = itemView.findViewById(R.id.editButton);
             deleteButton = itemView.findViewById(R.id.deleteButton);
         }
