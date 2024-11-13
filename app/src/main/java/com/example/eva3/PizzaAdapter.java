@@ -1,7 +1,5 @@
-// PizzaAdapter.java
 package com.example.eva3;
 
-import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,61 +8,80 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import java.util.List;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class PizzaAdapter extends RecyclerView.Adapter<PizzaAdapter.PizzaViewHolder> {
 
-    private Context context;
-    private List<Pizza> pizzaList;
+    private ArrayList<Pizza> pizzaList;
+    private boolean isAdmin;
 
-    public PizzaAdapter(Context context, List<Pizza> pizzaList) {
-        this.context = context;
-        this.pizzaList = pizzaList;
+    public PizzaAdapter(ArrayList<Pizza> pizzaList, boolean isAdmin) {
+        this.pizzaList = pizzaList != null ? pizzaList : new ArrayList<>();
+        this.isAdmin = isAdmin;
     }
 
     @NonNull
     @Override
     public PizzaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_pizza, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pizza, parent, false);
         return new PizzaViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull PizzaViewHolder holder, int position) {
         Pizza pizza = pizzaList.get(position);
-        holder.nombreTextView.setText(pizza.getNombre());
-        holder.ingredientesTextView.setText(pizza.getIngredientes());
-        holder.precioTextView.setText("$" + pizza.getPrecio());
+        holder.pizzaName.setText(pizza.getNombre());
+        holder.pizzaPrice.setText("Precio: $" + pizza.getPrecio());
+        holder.pizzaImageView.setImageResource(pizza.getImageResId()); // Mostrar la imagen
+        holder.ingredientesTextView.setText("Ingredientes: " + pizza.getIngredientes()); // Mostrar los ingredientes
 
-        // Cargar la imagen desde el recurso local usando el ID de la imagen
-        holder.pizzaImageView.setImageResource(pizza.getImageResId());
+        if (isAdmin) {
+            holder.editButton.setVisibility(View.VISIBLE);
+            holder.deleteButton.setVisibility(View.VISIBLE);
+            holder.btnBuy.setVisibility(View.GONE);
 
-        // Acción del botón Editar
-        holder.editButton.setOnClickListener(v -> {
-            Intent intent = new Intent(context, AddEditPizzaActivity.class);
-            intent.putExtra("pizzaId", pizza.getId());
-            context.startActivity(intent);
-        });
+            // Mostrar ID y fecha solo si el usuario es admin
+            holder.idTextView.setVisibility(View.VISIBLE);
+            holder.idTextView.setText("ID: " + pizza.getId());
 
-        // Acción del botón Borrar
-        holder.deleteButton.setOnClickListener(v -> {
-            DatabaseReference pizzaRef = FirebaseDatabase.getInstance().getReference("pizzas").child(pizza.getId());
-            pizzaRef.removeValue()
-                    .addOnSuccessListener(aVoid -> {
-                        // Verificar si la posición sigue siendo válida antes de eliminar
-                        if (position >= 0 && position < pizzaList.size()) {
-                            pizzaList.remove(position);
-                            notifyItemRemoved(position);
-                            notifyItemRangeChanged(position, pizzaList.size());
-                            Toast.makeText(context, "Pizza eliminada", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(context, "Error al eliminar pizza", Toast.LENGTH_SHORT).show());
-        });
+            holder.fechaTextView.setVisibility(View.VISIBLE);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            holder.fechaTextView.setText("Fecha de Creación: " + dateFormat.format(new Date(pizza.getCreatedAt())));
+
+            holder.editButton.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), AddEditPizzaActivity.class);
+                intent.putExtra("pizzaId", pizza.getId()); // Pasa el ID de la pizza
+                v.getContext().startActivity(intent);
+            });
+
+            holder.deleteButton.setOnClickListener(v -> {
+                DatabaseReference pizzaRef = FirebaseDatabase.getInstance().getReference("pizzas").child(pizza.getId());
+                pizzaRef.removeValue().addOnSuccessListener(aVoid ->
+                        Toast.makeText(v.getContext(), "Pizza eliminada", Toast.LENGTH_SHORT).show()
+                ).addOnFailureListener(e ->
+                        Toast.makeText(v.getContext(), "Error al eliminar pizza", Toast.LENGTH_SHORT).show()
+                );
+            });
+
+        } else {
+            holder.editButton.setVisibility(View.GONE);
+            holder.deleteButton.setVisibility(View.GONE);
+            holder.idTextView.setVisibility(View.GONE);
+            holder.fechaTextView.setVisibility(View.GONE);
+            holder.btnBuy.setVisibility(View.VISIBLE);
+            holder.btnBuy.setOnClickListener(v ->
+                    Toast.makeText(v.getContext(), "Compraste: " + pizza.getNombre(), Toast.LENGTH_SHORT).show()
+            );
+        }
     }
 
     @Override
@@ -73,16 +90,19 @@ public class PizzaAdapter extends RecyclerView.Adapter<PizzaAdapter.PizzaViewHol
     }
 
     public static class PizzaViewHolder extends RecyclerView.ViewHolder {
-        TextView nombreTextView, ingredientesTextView, precioTextView;
+        TextView pizzaName, pizzaPrice, ingredientesTextView, idTextView, fechaTextView;
         ImageView pizzaImageView;
-        Button editButton, deleteButton;
+        Button btnBuy, editButton, deleteButton;
 
         public PizzaViewHolder(@NonNull View itemView) {
             super(itemView);
-            nombreTextView = itemView.findViewById(R.id.nombreTextView);
-            ingredientesTextView = itemView.findViewById(R.id.ingredientesTextView);
-            precioTextView = itemView.findViewById(R.id.precioTextView);
+            pizzaName = itemView.findViewById(R.id.nombreTextView);
+            pizzaPrice = itemView.findViewById(R.id.precioTextView);
             pizzaImageView = itemView.findViewById(R.id.pizzaImageView);
+            ingredientesTextView = itemView.findViewById(R.id.ingredientesTextView);
+            idTextView = itemView.findViewById(R.id.idTextView);
+            fechaTextView = itemView.findViewById(R.id.fechaTextView);
+            btnBuy = itemView.findViewById(R.id.btnBuy);
             editButton = itemView.findViewById(R.id.editButton);
             deleteButton = itemView.findViewById(R.id.deleteButton);
         }

@@ -1,4 +1,3 @@
-// Pizza.java
 package com.example.eva3;
 
 public class Pizza {
@@ -6,25 +5,22 @@ public class Pizza {
     private String nombre;
     private String ingredientes;
     private int precio;
-    private int imageResId;  // ID del recurso de la imagen local
+    private int imageResId;
+    private long createdAt; // Campo para la fecha de creación en milisegundos
 
+    // Constructor vacío para Firebase
     public Pizza() {}
 
+    // Constructor para crear una pizza con los datos básicos
     public Pizza(String nombre, String ingredientes, int precio, int imageResId) {
         this.nombre = nombre;
         this.ingredientes = ingredientes;
         this.precio = precio;
         this.imageResId = imageResId;
+        this.createdAt = System.currentTimeMillis(); // Asigna la fecha de creación actual
     }
 
-    public int getImageResId() {
-        return imageResId;
-    }
-
-    public void setImageResId(int imageResId) {
-        this.imageResId = imageResId;
-    }
-
+    // Getters y setters para cada campo
     public String getId() {
         return id;
     }
@@ -49,11 +45,27 @@ public class Pizza {
         this.ingredientes = ingredientes;
     }
 
-    public double getPrecio() {
+    public int getPrecio() {
         return precio;
     }
 
-    public void setPrecio(double precio) {
-        this.precio = (int) precio;
+    public void setPrecio(int precio) {
+        this.precio = precio;
+    }
+
+    public int getImageResId() {
+        return imageResId;
+    }
+
+    public void setImageResId(int imageResId) {
+        this.imageResId = imageResId;
+    }
+
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
     }
 }

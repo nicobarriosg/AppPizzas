@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
+    android:gravity="center"
     android:background="@drawable/fondo">
 
     <EditText
@@ -35,6 +36,15 @@
         android:textColorHint="@color/white"
         android:backgroundTint="@color/white"/>
 
+    <Spinner
+        android:id="@+id/imageSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@color/white"/>
+
+
+    <!-- Botón Guardar -->
     <Button
         android:id="@+id/saveButton"
         android:layout_width="match_parent"
